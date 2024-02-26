@@ -78,3 +78,22 @@ switch (formaDePago) {
 console.log("El costo total de los productos seleccionados es: $" + totalCompra);
 
 
+// Arrays y Objetos (segunda pre entrega)
+// Array de precios
+let precios = [1800, 500, 300];
+
+// Array de cantidades
+let cantidades = [20, 25, 30];
+
+// Array de productos
+let productos = ["racion", "ropa", "correa"];
+
+// Recorriendo los arrays para obtener información de cada producto
+for (let i = 0; i < productos.length; i++) {
+    let producto = productos[i];
+    let precio = precios[i];
+    let cantidad = cantidades[i];
+    console.log(`Producto: ${producto}, Precio: ${precio}, Cantidad: ${cantidad}`);
+}
+
+

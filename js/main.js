@@ -79,21 +79,52 @@ console.log("El costo total de los productos seleccionados es: $" + totalCompra)
 
 
 // Arrays y Objetos (segunda pre entrega)
-// Array de precios
-let precios = [1800, 500, 300];
 
-// Array de cantidades
-let cantidades = [20, 25, 30];
-
-// Array de productos
-let productos = ["racion", "ropa", "correa"];
-
-// Recorriendo los arrays para obtener información de cada producto
-for (let i = 0; i < productos.length; i++) {
-    let producto = productos[i];
-    let precio = precios[i];
-    let cantidad = cantidades[i];
-    console.log(`Producto: ${producto}, Precio: ${precio}, Cantidad: ${cantidad}`);
-}
+// Definimos los objetos para representar los artículos
+var Racion = {
+    nombre: "Racion",
+    cantidad: 0,
+    precio: 0,
+    color: ""
+  };
+  
+  var Ropa = {
+    nombre: "Ropa",
+    cantidad: 0,
+    precio: 0,
+    color: ""
+  };
+  
+  var Correa = {
+    nombre: "Correa",
+    cantidad: 0,
+    precio: 0,
+    color: ""
+  };
+  
+  // Array de objetos
+  var articulos = [Racion, Ropa, Correa];
+  
+  // Solicitamos al usuario que ingrese la información para cada artículo
+  for (var i = 0; i < articulos.length; i++) {
+    articulos[i].cantidad = parseInt(prompt("Ingrese la cantidad de " + articulos[i].nombre + ":"));
+    articulos[i].precio = parseFloat(prompt("Ingrese el precio de " + articulos[i].nombre + ":"));
+    articulos[i].color = prompt("Ingrese el color de " + articulos[i].nombre + ":");
+  }
+  
+  // Procesamos la información y mostramos los resultados
+  for (var j = 0; j < articulos.length; j++) {
+    var costoTotalArticulo = articulos[j].cantidad * articulos[j].precio;
+    console.log("Para " + articulos[j].nombre + ":\nCantidad: " + articulos[j].cantidad + "\nPrecio: " + articulos[j].precio + "\nColor: " + articulos[j].color + "\nCosto total: " + costoTotalArticulo);
+  }
+  
+  // Calcular el costo total de la compra
+  var costoTotalCompra = articulos.reduce(function(total, articulo) {
+    return total + (articulo.cantidad * articulo.precio);
+  }, 0);
+  
+  // Mostrar el costo total de la compra al usuario
+  console.log("El costo total de la compra es: " + costoTotalCompra);
+  alert("El costo total de la compra es: " + costoTotalCompra);
 
 

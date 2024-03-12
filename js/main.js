@@ -128,3 +128,66 @@ var Racion = {
   alert("El costo total de la compra es: " + costoTotalCompra);
 
 
+// Tercera pre entrega (Dom,Eventos, Storage)
+
+// Seleccionar todos los botones de agregar al carrito
+const botonesAgregarAlCarrito = document.querySelectorAll('.agregar-al-carrito');
+
+// Agregar un event listener a cada botón
+botonesAgregarAlCarrito.forEach(boton => {
+  boton.addEventListener('click', agregarAlCarrito);
+});
+
+// Función para agregar un producto al carrito
+function agregarAlCarrito(evento) {
+  // Obtener el botón que disparó el evento
+  const boton = evento.target;
+
+  // Obtener el producto al que pertenece el botón
+  const producto = boton.closest('.producto');
+
+  // Obtener la información del producto
+  const nombre = producto.querySelector('h3').textContent;
+  const precio = parseFloat(producto.querySelector('p').textContent.slice(7));
+  const imagen = producto.querySelector('img').src;
+
+  // Crear un objeto con la información del producto
+  const productoSeleccionado = {
+    nombre,
+    precio,
+    imagen,
+    cantidad: 1
+  };
+
+  // Agregar el objeto al carrito
+  agregarProductoAlCarrito(productoSeleccionado);
+}
+
+// Función para agregar un producto al carrito
+function agregarProductoAlCarrito(producto) {
+  // Verificar si el producto ya existe en el carrito
+  const existe = carrito.some(item => item.nombre === producto.nombre);
+
+  if (existe) {
+    // Si el producto ya existe, aumentar la cantidad
+    const productoEnCarrito = carrito.find(item => item.nombre === producto.nombre);
+    productoEnCarrito.cantidad++;
+  } else {
+    // Si el producto no existe, agregarlo al carrito
+    carrito.push(producto);
+  }
+
+  // Mostrar el carrito en la consola
+  mostrarCarrito();
+}
+
+// Array para almacenar los productos seleccionados
+let carrito = [];
+
+// Función para mostrar el carrito en la consola
+function mostrarCarrito() {
+  console.log('Carrito:');
+  carrito.forEach(producto => {
+    console.log(`${producto.nombre} - Precio: $${producto.precio} - Cantidad: ${producto.cantidad} - Imagen: ${producto.imagen}`);
+  });
+}

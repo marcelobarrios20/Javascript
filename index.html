@@ -13,7 +13,6 @@
 	<body>
 		<header>
 			<h1>Tu mascota</h1>
-
 			<div class="container-icon">
 				<div class="container-cart-icon">
 					<svg
@@ -67,7 +66,24 @@
 					<p class="cart-empty">El carrito está vacío</p>
 				</div>
 			</div>
+
 		</header>
+
+		<div class="container">
+			<h2>Iniciar Sesión</h2>
+			<form id="loginForm">
+			  <div class="form-group">
+				<label for="email">Correo electrónico:</label>
+				<input type="email" id="email" name="email" required>
+			  </div>
+			  <div class="form-group">
+				<label for="password">Contraseña:</label>
+				<input type="password" id="password" name="password" required>
+			  </div>
+			  <button type="submit">Iniciar Sesión</button>
+			</form>
+		  </div>
+
 		<div class="container-items">
 			<div class="item">
 				<figure>
@@ -131,7 +147,12 @@
                 
 			</div>
 		</div>
+		<!-- SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<!-- Toastify -->
+<link href="https://cdn.jsdelivr.net/npm/toastify-js" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 		<script src="js/main.js"></script>
 	</body>
 </html>

@@ -277,7 +277,48 @@ window.addEventListener('load', () => {
     loadFromLocalStorage();
 });
 
+// Entrega final 
 
+Swal.fire({
+    title: 'Aceptar',
+    text: '¿Desea continuar?',
+    icon: 'Aceptar',
+    confirmButtonText: 'Aceptar'
+  })
 
+// Función para mostrar mensaje Toastify
+function showToast(message) {
+    Toastify({
+      text: message,
+      duration: 3000,
+      close: true,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)"
+    }).showToast();
+  }
+  
+  // Función para validar y enviar el formulario
+  document.getElementById("loginForm").addEventListener("submit", function(event) {
+    event.preventDefault(); // Evita que el formulario se envíe automáticamente
+  
+    // Obtenemos los valores de los campos de entrada
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+  
+    // Aquí iría la lógica de autenticación (simulada en este ejemplo)
+    // Por ejemplo, comparar el email y la contraseña con los valores correctos
+    if (email === "marcelobarrios@gmail.com" && password === "12345") {
+      // Mostrar mensaje de éxito con SweetAlert
+      Swal.fire('¡Inicio de sesión exitoso!', 'Bienvenido de vuelta.', 'success');
+      // Mostrar mensaje de éxito con Toastify
+      showToast("¡Inicio de sesión exitoso!");
+    } else {
+      // Mostrar mensaje de error con SweetAlert
+      Swal.fire('¡Error!', 'Email o contraseña incorrectos.', 'error');
+      // Mostrar mensaje de error con Toastify
+      showToast("Error: Email o contraseña incorrectos");
+    }
+  });
 
 

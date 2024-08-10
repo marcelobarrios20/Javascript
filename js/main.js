@@ -3,12 +3,77 @@ document.addEventListener("DOMContentLoaded", () => {
   let contraseña = "1234";
   let acceso = false;
 
+  let sweetAlertConfig = {};
+  let toastifyConfig = {};
+
+  // Función para cargar configuraciones desde el archivo JSON
+  const loadConfig = async () => {
+    try {
+      const response = await fetch("config.json");
+      const config = await response.json();
+      sweetAlertConfig = config.sweetalert;
+      toastifyConfig = config.toastify;
+    } catch (error) {
+      console.error("Error al cargar las configuraciones:", error);
+    }
+  };
+
+  // Función para cargar productos desde el archivo JSON
+  const loadProducts = async () => {
+    try {
+      const response = await fetch("db.json"); // Asegúrate de que el archivo JSON esté en la ruta correcta
+      const products = await response.json();
+      displayProducts(products);
+    } catch (error) {
+      console.error("Error al cargar los productos:", error);
+    }
+  };
+
+  // Función para mostrar productos en la página
+  const displayProducts = (products) => {
+    const productsList = document.querySelector(".container-items");
+    productsList.innerHTML = ""; // Limpiar contenido previo
+
+    products.forEach((product) => {
+      const productElement = document.createElement("div");
+      productElement.classList.add("item");
+
+      productElement.innerHTML = `
+        <figure>
+          <img src="imagenes/producto.png" alt="${product.nombre}" />
+        </figure>
+        <div class="info-product">
+          <h2>${product.nombre}</h2>
+          <p class="price">$${product.precio}</p>
+          <button class="btn-add-cart">Añadir al carrito</button>
+        </div>
+      `;
+
+      productsList.append(productElement);
+    });
+  };
+
+  // Función para consumir una API (Simulación de API)
+  const fetchDataFromAPI = async () => {
+    try {
+      const response = await fetch(
+        "https://jsonplaceholder.typicode.com/posts"
+      );
+      const posts = await response.json();
+      console.log("Datos obtenidos de la API:", posts.slice(0, 5)); // Mostrando solo los primeros 5 posts
+    } catch (error) {
+      console.error("Error al consumir la API:", error);
+    }
+  };
+
+  // Llamar a las funciones de carga al iniciar la página
+  loadConfig();
+  loadProducts();
+  fetchDataFromAPI();
+
   const loginForm = document.getElementById("loginForm");
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
-  const loginMessage = document.createElement("p");
-  loginMessage.className = "login-message";
-  document.querySelector(".container").appendChild(loginMessage);
 
   loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -16,95 +81,40 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = passwordInput.value.trim();
 
     if (username === "" || password === "") {
-      loginMessage.textContent =
-        "Por favor, ingrese un usuario y una contraseña.";
-      loginMessage.style.color = "red";
+      Swal.fire({
+        icon: "error",
+        title: sweetAlertConfig.errorTitle,
+        text: "Por favor, ingrese un usuario y una contraseña.",
+      });
       return;
     }
 
     if (username === usuario && password === contraseña) {
-      loginMessage.textContent = `¡Bienvenido, ${username}! Has ingresado correctamente.`;
-      loginMessage.style.color = "green";
+      Swal.fire({
+        icon: "success",
+        title: sweetAlertConfig.successTitle,
+        text: sweetAlertConfig.successText,
+      });
     } else {
-      loginMessage.textContent =
-        "Usuario o contraseña incorrectos. Por favor, inténtelo nuevamente.";
-      loginMessage.style.color = "red";
+      Swal.fire({
+        icon: "error",
+        title: sweetAlertConfig.errorTitle,
+        text: sweetAlertConfig.errorText,
+      });
     }
   });
 
-  // Productos
-  const precios = { Racion: 1800, Ropa: 500, Correa: 300 };
-  const cantidades = { Racion: 20, Ropa: 25, Correa: 30 };
-  let totalCompra = 0;
-  const formaDePago = "cuotas";
-  const meses = 12;
-
-  function calcularCostoTotal() {
-    let costoTotal = 0;
-    for (const producto in precios) {
-      costoTotal += precios[producto] * cantidades[producto];
-    }
-    return costoTotal;
-  }
-
-  function calcularMontoCuota(montoTotal, cuotas) {
-    return montoTotal / cuotas;
-  }
-
-  function calcularMontoCuotaFinanciada(montoTotal, cuotas, interes) {
-    let montoTotalConInteres = montoTotal * (1 + interes);
-    return montoTotalConInteres / cuotas;
-  }
-
-  totalCompra = calcularCostoTotal();
-
-  switch (formaDePago) {
-    case "cuotas":
-      let montoCuota = calcularMontoCuota(totalCompra, meses);
-      console.log(
-        `El monto de cada cuota para ${meses} meses es: $${montoCuota.toFixed(
-          2
-        )}`
-      );
-      break;
-    case "financiado":
-      let interes = 0.1;
-      let cuotaFinanciada = calcularMontoCuotaFinanciada(
-        totalCompra,
-        meses,
-        interes
-      );
-      console.log(
-        `El monto de cada cuota para ${meses} meses (con un 10% de interés) es: $${cuotaFinanciada.toFixed(
-          2
-        )}`
-      );
-      break;
-    default:
-      console.log("La forma de pago ingresada no es válida.");
-  }
-
-  console.log(
-    "El costo total de los productos seleccionados es: $" + totalCompra
-  );
-
-  // Manejo de carrito
   const btnCart = document.querySelector(".container-cart-icon");
   const containerCartProducts = document.querySelector(
     ".container-cart-products"
   );
   const rowProduct = document.querySelector(".row-product");
-  const productsList = document.querySelector(".container-items");
   const valorTotal = document.querySelector(".total-pagar");
   const countProducts = document.querySelector("#contador-productos");
   const cartEmpty = document.querySelector(".cart-empty");
   const cartTotal = document.querySelector(".cart-total");
 
   let allProducts = [];
-
-  btnCart.addEventListener("click", () => {
-    containerCartProducts.classList.toggle("hidden-cart");
-  });
 
   const showHTML = () => {
     if (!allProducts.length) {
@@ -127,26 +137,15 @@ document.addEventListener("DOMContentLoaded", () => {
       containerProduct.classList.add("cart-product");
 
       containerProduct.innerHTML = `
-                <div class="info-cart-product">
-                    <span class="cantidad-producto-carrito">${product.quantity}</span>
-                    <p class="titulo-producto-carrito">${product.title}</p>
-                    <span class="precio-producto-carrito">${product.price}</span>
-                </div>
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="icon-close"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M6 18L18 6M6 6l12 12"
-                    />
-                </svg>
-            `;
+        <div class="info-cart-product">
+          <span class="cantidad-producto-carrito">${product.quantity}</span>
+          <p class="titulo-producto-carrito">${product.title}</p>
+          <span class="precio-producto-carrito">${product.price}</span>
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon-close">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      `;
 
       rowProduct.append(containerProduct);
 
@@ -170,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  productsList.addEventListener("click", (e) => {
+  document.addEventListener("click", (e) => {
     if (e.target.classList.contains("btn-add-cart")) {
       const product = e.target.parentElement;
 
@@ -198,9 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
       showHTML();
       saveToLocalStorage();
     }
-  });
 
-  rowProduct.addEventListener("click", (e) => {
     if (e.target.classList.contains("icon-close")) {
       const product = e.target.parentElement;
       const title = product.querySelector("p").textContent;
@@ -210,6 +207,10 @@ document.addEventListener("DOMContentLoaded", () => {
       showHTML();
       saveToLocalStorage();
     }
+  });
+
+  btnCart.addEventListener("click", () => {
+    containerCartProducts.classList.toggle("hidden-cart");
   });
 
   window.addEventListener("load", () => {
